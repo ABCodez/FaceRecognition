@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import face_recognition
 import os
+from datetime import datetime
 
 # Get path to Images folder and load images into a list
 path = 'Images'
@@ -23,6 +24,21 @@ def encode(images):
         findEncode = face_recognition.face_encodings(image)[0]  # find encodings within image
         encodedList.append(findEncode)  # append encoded image to our list
     return encodedList
+
+
+# Security footage log
+def SecureLog(name):
+    with open('SecurityLog.csv', 'r+') as f:  # open log and write to it
+        logList = f.readlines()
+        idList = []
+        for eachLine in logList:
+            entry = eachLine.split(',')  # format entry
+            idList.append(entry[0])
+        if name not in idList:  # add name and time only ONCE (can be changed to have re-occurring name+time)
+            current = datetime.now()
+            date = current.strftime('%H:%M:%S')
+            f.writelines(f'\n{name},{date}')
+
 
 
 # output if faces are recognized
@@ -62,6 +78,7 @@ while True:
         cv2.rectangle(img, (x1, y1), (x2, y2), color, 1)  # draw rectangle
         cv2.rectangle(img, (x1, y2 - 30), (x2, y2), color, cv2.FILLED)
         cv2.putText(img, faceName, (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 1)
+        SecureLog(faceName)
 
     # display final result
     cv2.imshow("Facial Recognition - ABCodez", img)
