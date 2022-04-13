@@ -44,14 +44,16 @@ while True:
     for encodeFace, locateFace in zip(encodeFrame, initFrame):
         parallel = face_recognition.compare_faces(recognizedFaces, encodeFace)  # compare recognized faces w/ encodeFace
         distance = face_recognition.face_distance(recognizedFaces, encodeFace)  # find face distance attributes
+        print(distance)
         parallelIndex = np.argmin(distance)  # find the lowest distance as it will be our best match to the current face
 
         # Label recognized and unknown faces (if the distance is greater than 2.0 == person is unknown (alter #))
-        if parallel[parallelIndex] < 1.5:
+        if parallel[parallelIndex] > 0.8:
             faceName = names[parallelIndex].upper()
-            # print(faceName)
+            print(faceName)
         else:
             faceName = "Unknown"
+            print(faceName)
 
         # bounding box for image
         color = (0, 255, 0)
